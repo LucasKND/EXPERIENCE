@@ -7,13 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const postProcessCanvas = document.createElement('canvas');
     const postProcessCtx = postProcessCanvas.getContext('2d');
     
-    // Criar o elemento de texto EXPLORE
-    const exploreText = document.createElement('div');
-    exploreText.className = 'explore-text';
-    exploreText.textContent = 'EXPLORE';
-    document.body.appendChild(exploreText);
+    // Referências para elementos HTML
+    const exploreText = document.getElementById('exploreText');
+    const portfolioContainer = document.getElementById('portfolio');
     
-    // Mostrar o texto após um pequeno delay
+    // Mostrar o texto EXPLORE após um pequeno delay
     setTimeout(() => {
         exploreText.classList.add('visible');
         
@@ -21,9 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             exploreText.classList.add('fading');
             
-            // Remover o elemento do DOM após a animação de fade-out
+            // Remover a classe após a animação de fade-out
             setTimeout(() => {
-                document.body.removeChild(exploreText);
+                exploreText.classList.remove('visible');
+                exploreText.classList.remove('fading');
             }, 1000);
         }, 3000);
     }, 500);
@@ -748,24 +747,68 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.fillStyle = vignette;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Se estamos quase no máximo de escurecimento, adicionar um overlay preto
+                // Se estamos quase no máximo de escurecimento, mostrar o portfólio HTML
                 if (darknessAmount > 0.7) {
                     const finalDarkness = (darknessAmount - 0.7) / 0.3; // 0 a 1
                     ctx.fillStyle = `rgba(0, 0, 0, ${finalDarkness * 0.95})`;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
-                    // Adicionar mensagem de texto quando a tela estiver quase preta
-                    if (finalDarkness > 0.9) {
-                        ctx.font = "bold 20px Arial";
-                        ctx.fillStyle = `rgba(255, 255, 255, ${finalDarkness})`;
-                        ctx.textAlign = "center";
-                        ctx.fillText("Você cruzou o horizonte de eventos...", centerX, centerY - 20);
-                        ctx.font = "16px Arial";
-                        ctx.fillText("Não há retorno.", centerX, centerY + 20);
+                    // Quando a tela estiver quase preta, mostrar o portfólio
+                    if (finalDarkness > 0.9 && !portfolioVisible) {
+                        // Mostrar o portfólio HTML
+                        portfolioContainer.classList.add('visible');
+                        portfolioVisible = true;
+                        
+                        // Adicionar callback para "sair" do buraco negro ao clicar ou pressionar tecla
+                        if (!hasAddedEventListeners) {
+                            window.addEventListener('click', resetZoom);
+                            window.addEventListener('keydown', resetZoom);
+                            hasAddedEventListeners = true;
+                        }
                     }
+                } else if (portfolioVisible) {
+                    // Esconder o portfólio quando o usuário estiver saindo do buraco negro
+                    portfolioContainer.classList.remove('visible');
+                    portfolioVisible = false;
                 }
             }
         }
+    }
+    
+    // Variável para controlar a visibilidade do portfólio
+    let portfolioVisible = false;
+    
+    // Variável para controlar se os event listeners já foram adicionados
+    let hasAddedEventListeners = false;
+    
+    // Função para resetar o zoom e "sair" do buraco negro
+    function resetZoom() {
+        zoom.target = 1;
+        
+        // Esconder o portfólio
+        portfolioContainer.classList.remove('visible');
+        portfolioVisible = false;
+        
+        // Remover event listeners após uso
+        window.removeEventListener('click', resetZoom);
+        window.removeEventListener('keydown', resetZoom);
+        hasAddedEventListeners = false;
+        
+        // Mostrar o texto EXPLORE novamente
+        setTimeout(() => {
+            exploreText.classList.add('visible');
+            
+            // Remover o texto após 3 segundos
+            setTimeout(() => {
+                exploreText.classList.add('fading');
+                
+                // Remover as classes após a animação de fade-out
+                setTimeout(() => {
+                    exploreText.classList.remove('visible');
+                    exploreText.classList.remove('fading');
+                }, 1000);
+            }, 3000);
+        }, 500);
     }
     
     // Inicializar e começar a animação

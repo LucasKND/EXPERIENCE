@@ -5,9 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ambiente Espacial 3D</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <canvas id="spaceCanvas"></canvas>
+    
+    <!-- Elemento de texto EXPLORE que aparece e desaparece -->
+    <div id="exploreText" class="explore-text">EXPLORE</div>
+    
+    <!-- Portfólio que aparece após o horizonte de eventos -->
+    <div id="portfolio" class="portfolio-container">
+        <div class="event-horizon-message">Você cruzou o horizonte de eventos...</div>
+        <div class="portfolio-content">
+            <h1>LUCAS VERONEZE</h1>
+            <h2>DESENVOLVEDOR WEB</h2>
+            <p class="portfolio-tagline">Transformando ideias em experiências digitais únicas</p>
+            <div class="portfolio-skills">
+                <div class="skill">HTML5</div>
+                <div class="skill">CSS3</div>
+                <div class="skill">JavaScript</div>
+                <div class="skill">React</div>
+                <div class="skill">Node.js</div>
+            </div>
+            <p class="continue-message">Toque ou pressione qualquer tecla para continuar</p>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
