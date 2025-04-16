@@ -7,6 +7,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const postProcessCanvas = document.createElement('canvas');
     const postProcessCtx = postProcessCanvas.getContext('2d');
     
+    // Criar o elemento de texto EXPLORE
+    const exploreText = document.createElement('div');
+    exploreText.className = 'explore-text';
+    exploreText.textContent = 'EXPLORE';
+    document.body.appendChild(exploreText);
+    
+    // Mostrar o texto após um pequeno delay
+    setTimeout(() => {
+        exploreText.classList.add('visible');
+        
+        // Remover o texto após 3 segundos
+        setTimeout(() => {
+            exploreText.classList.add('fading');
+            
+            // Remover o elemento do DOM após a animação de fade-out
+            setTimeout(() => {
+                document.body.removeChild(exploreText);
+            }, 1000);
+        }, 3000);
+    }, 500);
+    
     function resizePostProcessCanvas() {
         postProcessCanvas.width = window.innerWidth * window.devicePixelRatio;
         postProcessCanvas.height = window.innerHeight * window.devicePixelRatio;
@@ -44,8 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Controle de zoom
     const zoom = {
-        current: 1,
-        target: 1,
+        current: 0.6,
+        target: 0.6,
         min: 0.5,
         max: 15, // Aumentado para permitir zoom mais profundo
         step: 0.15,
@@ -92,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Novas configurações para camadas profundas (visíveis apenas com zoom)
         maxDeepLayers: 12, // Aumentado para mais camadas profundas
-        deepLayerParticleCount: [300, 400, 500, 600, 700, 800, 1100, 1100, 1300, 1300, 1300, 1500], // Mais partículas por camada profunda
+        deepLayerParticleCount: [100, 400, 500, 600, 700, 800, 600, 500, 700, 800, 800, 800], // Mais partículas por camada profunda
         deepLayerSizeRange: [0.3, 0.8],
         deepLayerVisibilityThreshold: 2.5,
         
@@ -141,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             eventHorizonRadius: 205, // Raio do horizonte de eventos (reduzido de 80 para 45)
             accretionDiskRadius: 1, // Raio do disco de acreção (reduzido de 150 para 80)
             accretionDiskWidth: 1,  // Largura do disco de acreção (reduzido de 60 para 35)
-            pullStrength: 0.2,     // Força de atração do buraco negro mantida igual
+            pullStrength: 0.1,     // Força de atração do buraco negro mantida igual
             rotationSpeed: 0.001,   // Velocidade de rotação do disco de acreção mantida igual
             glowColor: '#4286f4',   // Cor do brilho do buraco negro mantida igual
             accretionColor1: '#ff7b00', // Cor interna do disco de acreção mantida igual
@@ -149,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Efeito de proximidade
             proximityEffect: {
-                blurStart: 7,        // Zoom onde o efeito de blur começa
+                blurStart: 8,        // Zoom onde o efeito de blur começa
                 blurMax: 12,         // Zoom onde o blur atinge o máximo
                 maxBlurAmount: 10,   // Quantidade máxima de blur (em px)
                 darknessStart: 9,    // Zoom onde o escurecimento começa

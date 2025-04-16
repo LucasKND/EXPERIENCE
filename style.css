@@ -19,3 +19,31 @@ body {
     height: 100%;
     display: block;
 }
+
+.explore-text {
+    position: fixed;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Arial', sans-serif;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    letter-spacing: 10px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                 0 0 20px rgba(255, 255, 255, 0.8),
+                 0 0 30px rgba(66, 134, 244, 0.8),
+                 0 0 40px rgba(66, 134, 244, 0.6),
+                 0 0 50px rgba(66, 134, 244, 0.4);
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.explore-text.visible {
+    opacity: 1;
+}
+
+.explore-text.fading {
+    opacity: 0;
+}
