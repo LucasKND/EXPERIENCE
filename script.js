@@ -10,6 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Referências para elementos HTML
     const exploreText = document.getElementById('exploreText');
     const portfolioContainer = document.getElementById('portfolio');
+    const spaceEnvironment = document.getElementById('spaceEnvironment');
+    
+    // Variável para controlar se a animação deve continuar
+    let animationActive = true;
+    let animationFrameId = null;
+    
+    // Criar elemento de transição hiperespacial
+    const hyperspaceTransition = document.createElement('div');
+    hyperspaceTransition.className = 'hyperspace-transition';
+    const hyperspaceStars = document.createElement('div');
+    hyperspaceStars.className = 'hyperspace-stars';
+    hyperspaceTransition.appendChild(hyperspaceStars);
+    document.body.appendChild(hyperspaceTransition);
+    
+    // Estado da sequência de transição
+    let sequenceState = {
+        portfolioShown: false,
+        returnedToBlackHole: false,
+        transitionComplete: false
+    };
     
     // Mostrar o texto EXPLORE após um pequeno delay
     setTimeout(() => {
@@ -648,7 +668,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Loop de animação
-    function animate() {
+    function animate(timestamp) {
+        // Se a animação não estiver ativa, não prosseguir
+        if (!animationActive) {
+            return;
+        }
+        
         const time = Date.now() * 0.001; // Tempo em segundos
         
         // Atualizar o zoom atual com transição suave
@@ -688,7 +713,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Aplicar os efeitos de proximidade (blur e escurecimento)
         applyProximityEffects(time);
         
-        requestAnimationFrame(animate);
+        // Solicitar próximo frame apenas se a animação ainda estiver ativa
+        animationFrameId = requestAnimationFrame(animate);
     }
     
     // Função para aplicar efeitos visuais conforme se aproxima do buraco negro
@@ -754,15 +780,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
                     // Quando a tela estiver quase preta, mostrar o portfólio
-                    if (finalDarkness > 0.9 && !portfolioVisible) {
+                    if (finalDarkness > 0.9 && !portfolioVisible && !sequenceState.portfolioShown) {
                         // Mostrar o portfólio HTML
                         portfolioContainer.classList.add('visible');
                         portfolioVisible = true;
+                        sequenceState.portfolioShown = true;
                         
-                        // Adicionar callback para "sair" do buraco negro ao clicar ou pressionar tecla
+                        // Adicionar callback para continuar a sequência
                         if (!hasAddedEventListeners) {
-                            window.addEventListener('click', resetZoom);
-                            window.addEventListener('keydown', resetZoom);
+                            window.addEventListener('click', startTransitionSequence);
+                            window.addEventListener('keydown', startTransitionSequence);
                             hasAddedEventListeners = true;
                         }
                     }
@@ -781,34 +808,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Variável para controlar se os event listeners já foram adicionados
     let hasAddedEventListeners = false;
     
-    // Função para resetar o zoom e "sair" do buraco negro
-    function resetZoom() {
-        zoom.target = 1;
+    // Função para iniciar a sequência de transição
+    function startTransitionSequence(event) {
+        // Remover event listeners para evitar múltiplas chamadas
+        window.removeEventListener('click', startTransitionSequence);
+        window.removeEventListener('keydown', startTransitionSequence);
+        hasAddedEventListeners = false;
         
         // Esconder o portfólio
         portfolioContainer.classList.remove('visible');
         portfolioVisible = false;
         
-        // Remover event listeners após uso
-        window.removeEventListener('click', resetZoom);
-        window.removeEventListener('keydown', resetZoom);
-        hasAddedEventListeners = false;
+        // Retornar para o buraco negro com zoom reduzido
+        zoom.target = 3; // Valor intermediário para visualizar o buraco negro
         
-        // Mostrar o texto EXPLORE novamente
+        // Após ver o buraco negro novamente, iniciar a transição para a nova tela
         setTimeout(() => {
-            exploreText.classList.add('visible');
+            sequenceState.returnedToBlackHole = true;
             
-            // Remover o texto após 3 segundos
+            // Ativar a transição hiperespacial
+            hyperspaceTransition.classList.add('active');
+            
+            // Aguardar a animação de transição e então redirecionar para a página de portfólio
             setTimeout(() => {
-                exploreText.classList.add('fading');
-                
-                // Remover as classes após a animação de fade-out
-                setTimeout(() => {
-                    exploreText.classList.remove('visible');
-                    exploreText.classList.remove('fading');
-                }, 1000);
-            }, 3000);
-        }, 500);
+                // Redirecionar para a página de portfólio separada
+                window.location.href = 'portfolio.html';
+            }, 2000); // Tempo suficiente para a animação de hyperspace
+        }, 3000); // Tempo para apreciar o buraco negro
     }
     
     // Inicializar e começar a animação
